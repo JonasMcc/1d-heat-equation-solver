@@ -37,8 +37,15 @@ plt.show()
 def plotExactSolution(): 
     # Parameters
     alpha = 1.0  # thermal diffusivity
-    x = np.linspace(0, 1, 500)  # spatial domain
-    times = [0.1]  # times to plot
+    Nx = 500
+    T = 0.1
+    dt = 0.001
+    n_final = int(T/dt)
+    k = 5 # Number of snapshots
+
+    x = np.linspace(0, 1, Nx)  # spatial domain
+    snapshot_times = [round(i * n_final / (k-1)) for i in range(k)]  # times to plot
+    times = [0.1]
 
     # Plot
     plt.figure(figsize=(8,5))

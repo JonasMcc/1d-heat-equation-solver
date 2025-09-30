@@ -15,7 +15,7 @@ int main()
     double a = 0.0;
     double b = 1.0;
     double alpha = 1.0;
-    double dt = 0.001;
+    double dt = 0.0001;
     double T = 0.1;
 
     // Grid
@@ -42,9 +42,21 @@ int main()
     });
 
     // Choose a scheme. We will use Crank--Nicolson. 
+    ForwardEuler1D solverFE(grid, pde, bc, ic, dt, T);
+    BackwardEuler1D solverBE(grid, pde, bc, ic, dt, T);
     CrankNicolson1D solverCN(grid, pde, bc, ic, dt, T);
 
-    // Initialize and run
+    // Initialize and run FE
+    solverFE.initialize();
+    solverFE.runSimulation();
+    solverFE.save("HeatFE.dat");
+
+    // Initialize and run CN
+    solverBE.initialize();
+    solverBE.runSimulation();
+    solverBE.save("HeatBE.dat");
+
+    // Initialize and run CN
     solverCN.initialize();
     solverCN.runSimulation();
     solverCN.save("HeatCN.dat");

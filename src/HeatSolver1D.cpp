@@ -1,4 +1,5 @@
 #include "HeatSolver1D.h"
+#include <fstream>
 #include <filesystem>
 
 /**
@@ -112,20 +113,6 @@ void HeatSolver1D::save(const std::string& filename) const
         out << grid[i] << " " << u[i] << "\n";
     }
 }
-
-//void HeatSolver1D::save(const std::string& filename) const 
-//{
-//    std::ofstream fout(filename);
-//    const auto& x = grid.points();
-
-//    for (std::size_t i = 0; i <= Nx; i++) 
-    //{
-      //  fout << x[i] << " " << u[i] << "\n";
-    //}
-
-    //fout.close();
-    //std::cout << "Results saved to " << filename << "\n";
-//}
 
 /**
  * @brief Apply Dirichlet boundary conditions to the solution vector u.

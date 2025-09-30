@@ -1,4 +1,5 @@
 #include "Grid1D.h"
+#include <stdexcept>
 
 /**
  * @brief Constructs a uniform 1D grid. 

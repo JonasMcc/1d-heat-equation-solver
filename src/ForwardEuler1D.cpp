@@ -1,4 +1,5 @@
 #include "ForwardEuler1D.h"
+#include <stdexcept>
 
 /**
  * @brief Construct a ForwardEuler1D solver.

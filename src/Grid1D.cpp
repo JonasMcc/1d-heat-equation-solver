@@ -15,7 +15,17 @@ Grid1D::Grid1D(
     , dx((b_ - a_)/ N_)
     , x(N_ + 1)
 {
-    for (std::size_t i = 0; i <= N; i++)
+    if (N_ <= 0)
+    {
+        throw std::invalid_argument("Grid1D: N must be > a.");
+    }
+
+    if (b_ <= a_)
+    {
+        throw std::invalid_argument("Grid1D: b must be larger ");
+    }
+
+    for (std::size_t i = 0; i <= static_cast<std::size_t>(N); i++)
     {
         x[i] = a + i * dx;
     }

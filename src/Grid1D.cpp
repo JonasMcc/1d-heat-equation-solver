@@ -4,6 +4,8 @@
  * @brief Constructs a uniform 1D grid. 
  * 
  * Fills the vector of grid points from a to b with N+1 points.
+ * 
+ * @throws std::invalid_argument if N <= 0 and if b is not > a. 
  */
 Grid1D::Grid1D(
     int N_,         
@@ -17,12 +19,12 @@ Grid1D::Grid1D(
 {
     if (N_ <= 0)
     {
-        throw std::invalid_argument("Grid1D: N must be > a.");
+        throw std::invalid_argument("Grid1D: N must be > 0.");
     }
 
     if (b_ <= a_)
     {
-        throw std::invalid_argument("Grid1D: b must be larger ");
+        throw std::invalid_argument("Grid1D: b must be > a.");
     }
 
     for (std::size_t i = 0; i <= static_cast<std::size_t>(N); i++)

@@ -19,7 +19,7 @@
  * @param c Super-diagonal coefficients (length n-1)
  * @param rhs Right-hand side vector (length n) 
  * 
- * @note This function overrides d with the solution. 
+ * @note This function overrides rhs with the solution.  
  */
 void tridiagonalSolve(const std::vector<double>& a,
                       const std::vector<double>& b,

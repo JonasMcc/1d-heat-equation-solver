@@ -5,6 +5,8 @@
  * @brief Construct a HeatEquation1D object.
  * 
  * This class stores the diffusion coefficient for later use by solvers.
+ * 
+ * @throws std::invalid_argument if diffusion constant is not > 0. 
  */
 HeatEquation1D::HeatEquation1D(double alpha_) : alpha(alpha_)
 {

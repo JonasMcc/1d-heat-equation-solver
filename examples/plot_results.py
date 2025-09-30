@@ -27,6 +27,7 @@ axes[2].set_xlabel("x")
 axes[2].set_ylabel("u(x, t)")
 axes[2].set_title("Crank--Nicolson Method")
 
+# Show grid on all axes. 
 for ax in axes: 
     ax.grid(True)
 

@@ -40,16 +40,17 @@ def plotExactSolution():
     Nx = 500
     T = 0.1
     dt = 0.001
+    save_every = 50
     n_final = int(T/dt)
-    k = 5 # Number of snapshots
 
     x = np.linspace(0, 1, Nx)  # spatial domain
-    snapshot_times = [round(i * n_final / (k-1)) for i in range(k)]  # times to plot
-    times = [0.1]
+
+    snapshot_times = [n * dt * save_every for n in range(int(T / (dt * save_every)) + 1)]
+    print(snapshot_times)
 
     # Plot
     plt.figure(figsize=(8,5))
-    for t in times:
+    for t in snapshot_times:
         u = np.sin(np.pi * x) * np.exp(-alpha * (np.pi**2) * t)
         plt.plot(x, u, label=f't={t}')
 

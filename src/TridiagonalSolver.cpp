@@ -1,4 +1,7 @@
 #include "TridiagonalSolver.h"
+#include <stdexcept>
+#include <limits>
+#include <cmath>
 
 /**
  * @brief Solve a tridiagonal linear system Ax = d using the Thomas algorithm.
@@ -12,14 +15,17 @@
  * @param a Sub-diagonal coefficients (length n-1)
  * @param b Main diagonal coefficients (length n)
  * @param c Super-diagonal coefficients (length n-1)
- * @param d Right-hand side vector (length n) 
+ * @param rhs Right-hand side vector (length n) 
+ * 
+ * @throws std::invalid_argument if input vector sizes are inconsistent.
+ * @throws std::runtime_error.   if a zero pivot is encountered (singular system).
  */
 void tridiagonalSolve(const std::vector<double>& a,
                       const std::vector<double>& b,
                       const std::vector<double>& c, 
-                      std::vector<double>& d)
+                      std::vector<double>& rhs)
 {
-    std::size_t n = d.size();
+    std::size_t n = rhs.size();
 
     // Basic size checks
     if (n == 0) 
@@ -57,7 +63,7 @@ void tridiagonalSolve(const std::vector<double>& a,
     }
     
     c_star[0] = (n > 1) ? c[0] / b[0] : 0.0;
-    d_star[0] = d[0] / b[0];
+    d_star[0] = rhs[0] / b[0];
 
     // Forward elimination
     for (std::size_t i = 1; i < n; ++i) 
@@ -76,14 +82,14 @@ void tridiagonalSolve(const std::vector<double>& a,
             c_star[i] = c[i] * m;
         }
         
-        d_star[i] = (d[i] - a[i - 1] * d_star[i - 1]) * m;
+        d_star[i] = (rhs[i] - a[i - 1] * d_star[i - 1]) * m;
     }
 
     // Back substitution: overwrite d with the solution
-    d[n - 1] = d_star[n - 1];
+    rhs[n - 1] = d_star[n - 1];
 
     for (int i = static_cast<int>(n) - 2; i >= 0; --i) 
     {
-        d[i] = d_star[i] - c_star[i] * d[i + 1];
+        rhs[i] = d_star[i] - c_star[i] * rhs[i + 1];
     }
 }

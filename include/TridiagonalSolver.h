@@ -17,11 +17,11 @@
  * @param a Sub-diagonal coefficients (length n-1)
  * @param b Main diagonal coefficients (length n)
  * @param c Super-diagonal coefficients (length n-1)
- * @param d Right-hand side vector (length n) 
+ * @param rhs Right-hand side vector (length n) 
  * 
  * @note This function overrides d with the solution. 
  */
 void tridiagonalSolve(const std::vector<double>& a,
                       const std::vector<double>& b,
                       const std::vector<double>& c, 
-                      std::vector<double>& d);
+                      std::vector<double>& rhs);

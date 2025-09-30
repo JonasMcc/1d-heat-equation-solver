@@ -34,7 +34,7 @@ void tridiagonalSolve(const std::vector<double>& a,
     }
     if (b.size() != n) 
     {
-        throw std::invalid_argument("tridiagonalSolve: b.size() != d.size()");
+        throw std::invalid_argument("tridiagonalSolve: b.size() != rhs.size()");
     }
     if (n > 1) 
     {

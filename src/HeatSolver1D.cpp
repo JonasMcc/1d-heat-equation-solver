@@ -37,7 +37,7 @@ HeatSolver1D::HeatSolver1D(
 }
 
 /**
- * @brief Apply initial confition to the solution vector. 
+ * @brief Apply initial condition to the solution vector. 
  * 
  * This sets u(x, 0) = ic(x) for all spatial grid points.
  */

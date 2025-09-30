@@ -38,7 +38,7 @@ def plotExactSolution():
     # Parameters
     alpha = 1.0  # thermal diffusivity
     x = np.linspace(0, 1, 500)  # spatial domain
-    times = [0, 0.1, 0.2, 0.3, 0.8, 1.0]  # times to plot
+    times = [0.1]  # times to plot
 
     # Plot
     plt.figure(figsize=(8,5))

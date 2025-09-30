@@ -26,7 +26,7 @@ ForwardEuler1D::ForwardEuler1D(
     : HeatSolver1D(grid_, pde_, bc_, ic_, dt_, T_)
 {
     // Compute CFL number
-    r = pde.diffusion() * dt / (dx * dx);
+    r = pde_.diffusion() * dt / (dx * dx);
 
     // Allocate temporary vector to store updated solution. 
     u_updated.resize(grid.size(), 0.0);

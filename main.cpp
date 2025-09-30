@@ -46,7 +46,8 @@ int main()
 
     // Initialize and run
     solverCN.initialize();
-    solverCN.runSimulationWithSnapshots("heatCN", 10);
+    solverCN.runSimulation();
+    solverCN.save("HeatCN.dat");
 
     std::cout << "Simulation finished. Results in ./results/ directory.\n";
     

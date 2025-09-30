@@ -20,34 +20,70 @@ void tridiagonalSolve(const std::vector<double>& a,
                       std::vector<double>& d)
 {
     std::size_t n = d.size();
-    std::vector<double> c_star(n-1), d_star(n);
 
-    // Step 1: Forward elimination
-    // Compute modified coefficients c* and d* such that system becomes upper-triangular
-    c_star[0] = c[0] / b[0];
-    d_star[0] = d[0] / b[0];
-
-    for (std::size_t i = 1; i < n; i++) {
-        // Elimination factor
-        double m = 1.0 / (b[i] - a[i-1]*c_star[i-1]);
-
-        // Update c* (only until second-to-last equation)
-        if (i < n-1) 
+    // Basic size checks
+    if (n == 0) 
+    {
+        throw std::invalid_argument("tridiagonalSolve: system size n == 0");
+    }
+    if (b.size() != n) 
+    {
+        throw std::invalid_argument("tridiagonalSolve: b.size() != d.size()");
+    }
+    if (n > 1) 
+    {
+        if (a.size() != n - 1 || c.size() != n - 1) 
         {
-            c_star[i] = c[i]*m; 
+            throw std::invalid_argument("tridiagonalSolve: a and c must have length n-1 when n>1");
         }
-        
-        // Update d*
-        d_star[i] = (d[i] - a[i-1]*d_star[i-1])*m;
+    } 
+    else 
+    {
+        // n == 1, a and c should be empty
+        if (!a.empty() || !c.empty()) 
+        {
+            throw std::invalid_argument("tridiagonalSolve: a/c must be empty for n==1");
+        }
     }
 
-    // Step 2: Back substitution
-    // Solve the last variable directly
-    d[n-1] = d_star[n-1];
+    // Temporary vectors
+    std::vector<double> c_star(n - 1);
+    std::vector<double> d_star(n);
 
-    // Recurse backwards to solve for all variables
-    for (int i = static_cast<int>(n) - 2; i >=0; i--)
+    // First equation
+    if (std::abs(b[0]) < std::numeric_limits<double>::epsilon()) 
     {
-         d[i] = d_star[i] - c_star[i]*d[i+1];
+        throw std::runtime_error("tridiagonalSolve: zero pivot in b[0]");
+    }
+    
+    c_star[0] = (n > 1) ? c[0] / b[0] : 0.0;
+    d_star[0] = d[0] / b[0];
+
+    // Forward elimination
+    for (std::size_t i = 1; i < n; ++i) 
+    {
+        double denom = b[i] - a[i - 1] * c_star[i - 1];
+
+        if (std::abs(denom) < std::numeric_limits<double>::epsilon()) 
+        {
+            throw std::runtime_error("tridiagonalSolve: zero pivot encountered during elimination");
+        }
+        
+        double m = 1.0 / denom;
+
+        if (i < n - 1) 
+        {
+            c_star[i] = c[i] * m;
+        }
+        
+        d_star[i] = (d[i] - a[i - 1] * d_star[i - 1]) * m;
+    }
+
+    // Back substitution: overwrite d with the solution
+    d[n - 1] = d_star[n - 1];
+
+    for (int i = static_cast<int>(n) - 2; i >= 0; --i) 
+    {
+        d[i] = d_star[i] - c_star[i] * d[i + 1];
     }
 }

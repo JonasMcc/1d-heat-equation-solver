@@ -16,13 +16,13 @@ axes[0].set_ylabel("u(x, t)")
 axes[0].set_title("Forward Euler Method")
 
 # Backward Euler
-axes[1].plot(x_be, u_be, color='green', marker='o', linestyle='-', markersize=4)
+axes[1].plot(x_be, u_be, 'go')
 axes[1].set_xlabel("x")
 axes[1].set_ylabel("u(x, t)")
 axes[1].set_title("Backward Euler Method")
 
 # Crank--Nicolson
-axes[2].plot(x_cn, u_cn, color='red', marker='o', linestyle='-', markersize=4)
+axes[2].plot(x_cn, u_cn, 'ro')
 axes[2].set_xlabel("x")
 axes[2].set_ylabel("u(x, t)")
 axes[2].set_title("Crank--Nicolson Method")

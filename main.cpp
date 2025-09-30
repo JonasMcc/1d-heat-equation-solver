@@ -42,9 +42,9 @@ int main()
     });
 
     // Choose a scheme. We will use Crank--Nicolson. 
-    ForwardEuler1D solverFE(grid, pde, bc, ic, dt, T);
-    BackwardEuler1D solverBE(grid, pde, bc, ic, dt, T);
-    CrankNicolson1D solverCN(grid, pde, bc, ic, dt, T);
+    ForwardEuler1D solverFE(grid, pde, bc_sine, ic, dt, T);
+    BackwardEuler1D solverBE(grid, pde, bc_sine, ic, dt, T);
+    CrankNicolson1D solverCN(grid, pde, bc_sine, ic, dt, T);
 
     // Initialize and run FE
     solverFE.initialize();

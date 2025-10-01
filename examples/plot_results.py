@@ -1,52 +1,73 @@
+from typing import List
 import numpy as np
 import matplotlib.pyplot as plt
 import glob
 import re
 
-# Parameter
-dt = 0.0001
-alpha = 1.0
-Nx = 50
-T = 0.1
+from dataclasses import dataclass, field
 
-# Spatial grid
-x = np.linspace(0, 1, Nx+1)
-Nt = int(T / dt)
+@dataclass
+class Parameters:
+    dt: float = 0.0001
+    alpha: float = 1.0
+    Nx: int = 50
+    T: float = 0.1
 
-file_pattern = "example-outputs/full-simulation-FE/HeatFE_step*.dat"
-files = glob.glob(file_pattern)
-files_sorted = sorted(files, key=lambda f: int(re.search(r'step(\d+)\.dat', f).group(1)))
+    x: np.ndarray = field(init=False)
+    Nt: int = field(init=False)
+    save_steps: List = field(init=False)
 
-save_steps = [0, Nt // 2, Nt]
+    def __post_init__(self):
+        self.x = np.linspace(0, 1, self.Nx + 1)
+        self.Nt = int(self.T / self.dt)
+        self.save_steps = [0, self.Nt // 2, self.Nt]
 
-selected_files = [f for f in files_sorted if int(re.search(r'step(\d+)\.dat', f).group(1)) in save_steps]
+p = Parameters()
 
-plt.figure(figsize=(15,5))
+def plot_simulation(
+    solver: str,
+    parameters: Parameters,
+    stride: int = 3
+) -> None:
+    suffix: str = f"Heat{solver.upper()}_step*"
+    fpattern: str = f"example-outputs/full-simulation-{solver.upper()}/{suffix}"
+    files = glob.glob(fpattern)
+    fsorted: List = sorted(files, key=lambda f: int(re.search(r'step(\d+)\.dat', f).group(1)))
+    fselected: List = [f for f in fsorted if int(re.search(r'step(\d+)\.dat', f).group(1)) in p.save_steps]
 
-for index, file in enumerate(selected_files):
-    step_index = int(re.search(r'step(\d+)\.dat', file).group(1))
-    t = step_index * dt
+    plt.figure(figsize=(15,5))
 
-    # Numerical solution
-    u_numeric = np.loadtxt(file)[:, 1]
+    for index, file in enumerate(fselected):
+        step_index: int = int(re.search(r'step(\d+)\.dat', file).group(1))
+        t: float = step_index * p.dt
 
-    # Exact solution
-    u_exact = np.exp(-alpha * np.pi**2 * t) * np.sin(np.pi * x)
+        # Numerical solution
+        u_numeric = np.loadtxt(file)[:, 1]
 
-    plt.subplot(1, 3, index+1)
-    plt.plot(x, u_exact, 'r-', label='Exact')
+        # Exact solution
+        u_exact = np.exp(-p.alpha * np.pi**2 * t) * np.sin(np.pi * p.x)
 
-    stride = 3
-    plt.plot(x[::stride], u_numeric[::stride], 'bo', markersize=4, label='Numerical')
-    plt.xlabel('x')
-    plt.ylabel('u(x,t)')
-    plt.title(f"t = {t:.3f}")
-    plt.ylim(0, 1.1)
-    plt.legend()
+        plt.subplot(1, 3, index+1)
+        plt.plot(p.x, u_exact, 'r-', label='Exact')
+        plt.plot(p.x[::stride], u_numeric[::stride], 'bo', markersize=4, label='Numerical')
+        plt.xlabel('x')
+        plt.ylabel('u(x, t)')
+        plt.title(f"t = {t:.3f}")
+        plt.ylim(0, 1.1)
+        plt.legend()
+    
+    solver_names = {
+        "fe": "Forward Euler",
+        "be": "Backward Euler",
+        "cn": "Crank--Nicolson"
+    }
 
-plt.suptitle("1D Heat Equation: Forward Euler Numerical vs Exact Solution", fontsize=14)
-plt.tight_layout(rect=[0, 0, 1, 0.95])
-plt.show()
+    plt.suptitle(f"1D Heat Equation: {solver_names.get(solver)} Numerical vs Exact Solution", fontsize=14)
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
+    plt.show()   
+
+plot_simulation(solver="cn", parameters=p)
+
 
 # I want to split it up, plot forward Euler etc. 
 def plot_simulation_final_time():

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple, Union
 import numpy as np
 import matplotlib.pyplot as plt
 import glob
@@ -15,7 +15,7 @@ class Parameters:
 
     x: np.ndarray = field(init=False)
     Nt: int = field(init=False)
-    save_steps: List = field(init=False)
+    save_steps: List[int] = field(init=False)
 
     def __post_init__(self):
         self.x = np.linspace(0, 1, self.Nx + 1)
@@ -23,6 +23,54 @@ class Parameters:
         self.save_steps = [0, self.Nt // 2, self.Nt]
 
 p = Parameters()
+
+def load_solver_data(
+    solver: str, 
+    parameters: Parameters, 
+    final: bool = False
+) -> Union[ 
+        List[str],
+        Tuple[np.ndarray, np.ndarray, np.ndarray, float]
+    ]:
+    """
+    Load solver output files and (if applicable) compute the exact solution.
+
+    Args:
+        solver (str): Solver identifier ("fe", "be", "cn").
+        parameters (Parameters): Dataclass storing the simulation parameters
+        final (bool): 
+            If False: return list of snapshot filenames for the chosen solver.
+            If True: load final-time data file and return numerical + exact solution.
+    
+    Returns:
+        If final == False:
+            List[str]: Sorted list of filenames for the requested solver and save steps.
+
+        If final == True:
+            Tuple[np.ndarray, np.ndarray, np.ndarray, float]:
+                (x, u_numeric, u_exact, t)
+                - x: spatial grid from file
+                - u_numeric: numerical solution at time t
+                - u_exact: exact solution at time t (computed analytically)
+                - t: final simulation time
+    """
+    if final: 
+        # Load final-time .dat file
+        filepath = f"example-outputs/simulation-final-time/Heat{solver.upper()}.dat"
+        x, u_numeric = np.loadtxt(filepath, unpack=True)
+        t = parameters.T
+        u_exact = np.exp(-parameters.alpha * np.pi**2 * t) * np.sin(np.pi * parameters.x)
+        
+        return x, u_numeric, u_exact, t
+    else:
+        # Load time snapshots
+        suffix: str = f"Heat{solver.upper()}_step*"
+        fpattern: str = f"example-outputs/full-simulation-{solver.upper()}/{suffix}"
+        files = glob.glob(fpattern)
+        fsorted: List = sorted(files, key=lambda f: int(re.search(r'step(\d+)\.dat', f).group(1)))
+        fselected: List = [f for f in fsorted if int(re.search(r'step(\d+)\.dat', f).group(1)) in p.save_steps]
+
+        return fselected
 
 def plot_simulation(
     solver: str,
@@ -66,7 +114,7 @@ def plot_simulation(
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.show()   
 
-plot_simulation(solver="cn", parameters=p)
+#plot_simulation(solver="cn", parameters=p)
 
 
 # I want to split it up, plot forward Euler etc. 

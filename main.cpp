@@ -47,24 +47,23 @@ int main()
     CrankNicolson1D solverCN(grid, pde, bc, ic, dt, T);
 
     // With snapshots
-    //solverFE.runSimulationWithSnapshots("HeatFE", 50);
+    solverFE.initialize();
+    solverFE.runSimulationWithSnapshots("HeatFE", 50);
 
     // Initialize and run FE
-    solverFE.initialize();
-    solverFE.runSimulation();
-    solverFE.save("HeatFE.dat");
-
-    //
+    //solverFE.initialize();
+    //solverFE.runSimulation();
+    //solverFE.save("HeatFE.dat");
 
     // Initialize and run CN
-    solverBE.initialize();
-    solverBE.runSimulation();
-    solverBE.save("HeatBE.dat");
+    //solverBE.initialize();
+    //solverBE.runSimulation();
+    //solverBE.save("HeatBE.dat");
 
     // Initialize and run CN
-    solverCN.initialize();
-    solverCN.runSimulation();
-    solverCN.save("HeatCN.dat");
+    //solverCN.initialize();
+    //solverCN.runSimulation();
+    //solverCN.save("HeatCN.dat");
 
     std::cout << "Simulation finished. Results in ./results/ directory.\n";
     

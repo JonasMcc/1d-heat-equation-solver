@@ -21,7 +21,7 @@ As a demonstration, we solve the heat equation
 $$
     \frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}
 $$
-on the spatial domain $[0, 1]$ with homogeneous Dirichlet boundary conditions $u(0, t) = u(0, t) = 0$, and initial condition given by $u(x, 0) = \sin(\pi x)$. 
+on the spatial domain $[0, 1]$ with homogeneous Dirichlet boundary conditions $u(0, t) = u(1, t) = 0$, and initial condition given by $u(x, 0) = \sin(\pi x)$. 
 
 In this case, the heat equation has an exact solution given by the function
 $$
@@ -82,8 +82,8 @@ int main()
 ```
 
 ### Output of simulation
-During the simulation above, the solver periodically writes snapshots of the solution to text files with the extension `.dat`. Each file contains two colummns: $x$ and $u(x, t)$, where
-- $x$ is the spatial coodinate on the grid $[0, 1]$. 
+During the simulation above, the solver periodically writes snapshots of the solution to text files with the extension `.dat`. Each file contains two columns: $x$ and $u(x, t)$, where
+- $x$ is the spatial coordinate on the grid $[0, 1]$. 
 - $u(x, t)$ is the solution at that point of the grid and the time of the snapshot. 
 
 For example, a snippet of `results/HeatCN_step500` might look like: 
@@ -104,14 +104,14 @@ The naming convention is:
 - `HeatBE_stepN.dat`: Backward Euler snapshot at step `N`  
 - `HeatCN_stepN.dat`: Crank–Nicolson snapshot at step `N`
 
-At the final time, the script also writes:
+If we instead use the command `runSimulation()`, the script writes:
 
 - `HeatFE.dat`, `HeatBE.dat`, `HeatCN.dat`
 
-which contain only the last snapshot. 
+which contain only the last snapshot at the final time. 
 
 These plain-text files are lightweight and easy to parse in Python.  
-The included Python plotting utilities (`examples/plot_results.py`) directly read these `.dat` files and produces plots. 
+The included Python plotting utility (`examples/plot_results.py`) directly reads these `.dat` files and produces plots. 
 
 ### Visualization in Python
 We now explain how to visualize the simulation done above in Python. In the folder `examples/example-outputs/full-simulation-CN`, we have saved the output of the simulation in C++ above. The simulation can be visualized with the following Python script:
@@ -137,11 +137,15 @@ plot_simulation_final_time(parameters=p)
 ![Alt text](examples/simulation-finaltime.png)
 
 ### The Courant–Friedrichs–Lewy number and stability
-The Courant–Friedrichs–Lewy number $r$ is defined by
+We end by providing a few remarks on the Courant–Friedrichs–Lewy number
 $$
     r = \frac{\alpha \, \Delta t}{\Delta x^2}.
 $$
-It governs the stability of the Forward Euler scheme. 
+since it governs the stability and accuracy of explicit time-stepping schemes for the heat equation. 
+
+- Forward Euler: requires $r \leq 0.5$ for stability.  
+- Backward Euler: unconditionally stable.  
+- Crank–Nicolson: unconditionally stable, second-order accurate, but may show oscillations if $r$ is too large.  
 
 ---
 
@@ -149,10 +153,13 @@ It governs the stability of the Forward Euler scheme.
 This repository is organized as follows:
 
 ```text
-heat-equation-solver/
-├── CMakeLists.txt         # Build configuration (CMake)
-├── main.cpp               # Example driver for running simulations
-├── include/               # Header files (public interfaces)
+1d-heat-equation-solver/
+├── examples/                       # Example outputs in .dat format and python script for plotting.
+│   ├── example-outputs/
+│   ├── plot_results.py
+│   ├── cn-simulation.png
+│   └–– simulation-finaltime.png
+├── include/                        # Header files
 │   ├── BackwardEuler1D.h
 │   ├── BoundaryCondition.h
 │   ├── CrankNicolson1D.h
@@ -162,7 +169,7 @@ heat-equation-solver/
 │   ├── HeatSolver1D.h
 │   ├── InitialCondition.h
 │   └── TridiagonalSolver.h
-├── src/                   # Source files (implementations)
+├── src/                            # Source files
 │   ├── BackwardEuler1D.cpp
 │   ├── BoundaryCondition.cpp
 │   ├── CrankNicolson1D.cpp
@@ -172,16 +179,11 @@ heat-equation-solver/
 │   ├── HeatSolver1D.cpp
 │   ├── InitialCondition.cpp
 │   └── TridiagonalSolver.cpp
-├── python/                # Python utilities for visualization
-│   └── heat_plot.py
-├── results/               # Output directory (generated at runtime)
-│   ├── HeatFE_step0.dat
-│   ├── HeatFE_step500.dat
-│   ├── HeatFE.dat
-│   └── ...
-├── docs/                  # Documentation and figures
-│   └── cn_final_example.png
-└── README.md              # Project documentation
+├── CMakeLists.txt
+├── LICENSE
+├── main.cpp
+└── README.md
+```
 
 ## Build
 Build with CMake as follows:
@@ -194,11 +196,14 @@ mkdir build && cd build
 cmake ..
 
 # Build
-make -j4
+make
 
 # Run solver
 ./HeatEquationSolver 
 ```
 
+## License
+This project is licensed under the MIT License. 
+You are free to use, modify, and distribute this code for educational, research, or commercial purposes, provided that proper credit is given.
 
 

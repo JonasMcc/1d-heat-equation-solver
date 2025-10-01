@@ -98,6 +98,7 @@ def plot_simulation(
         plt.ylabel('u(x, t)')
         plt.title(f"t = {t:.3f}")
         plt.ylim(0, 1.1)
+        plt.grid(True)
         plt.legend()
     
     solver_names = {
@@ -110,40 +111,34 @@ def plot_simulation(
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.show()   
 
-plot_simulation(solver="cn", parameters=p)
-
-
 # I want to split it up, plot forward Euler etc. 
-def plot_simulation_final_time():
-    # Load data
-    x_fe, u_fe = np.loadtxt("example-outputs/simulation-final-time/HeatFE.dat", unpack=True)    
-    x_be, u_be = np.loadtxt("example-outputs/simulation-final-time/HeatBE.dat", unpack=True)
-    x_cn, u_cn = np.loadtxt("example-outputs/simulation-final-time/HeatCN.dat", unpack=True)
+def plot_simulation_final_time(parameters: Parameters):
+    """
+    Add.
+    """
+    solvers = ["fe", "be", "cn"]
+    solver_names = {
+        "fe": "Forward Euler",
+        "be": "Backward Euler",
+        "cn": "Crank--Nicolson"
+    }
 
-    # Create figure with 3 subplots
-    fig, axes = plt.subplots(1, 3, figsize=(16, 6), sharex=True)
+    fig, axes = plt.subplots(1, 3, figsize=(16, 6), sharex=True, sharey=True)
 
-    # Forward Euler
-    axes[0].plot(x_fe, u_fe, 'bo')
-    axes[0].set_xlabel("x")
-    axes[0].set_ylabel("u(x, t)")
-    axes[0].set_title("Forward Euler Method")
+    for index, solver in enumerate(solvers):
+        x, u_numeric, u_exact, t = load_solver_data(solver=solver, parameters=parameters, final=True)
 
-    # Backward Euler
-    axes[1].plot(x_be, u_be, 'go')
-    axes[1].set_xlabel("x")
-    axes[1].set_ylabel("u(x, t)")
-    axes[1].set_title("Backward Euler Method")
-
-    # Crank--Nicolson
-    axes[2].plot(x_cn, u_cn, 'ro')
-    axes[2].set_xlabel("x")
-    axes[2].set_ylabel("u(x, t)")
-    axes[2].set_title("Crank--Nicolson Method")
-
-    # Show grid on all axes. 
-    for ax in axes: 
-        ax.grid(True)
-
-    plt.tight_layout()
+        axes[index].plot(x, u_numeric, 'o', markersize=4, label=solver_names.get(solver))
+        axes[index].plot(parameters.x, u_exact, 'r-', label='Exact')
+        axes[index].set_title(solver_names.get(solver))
+        axes[index].set_xlabel("x")
+        axes[index].set_ylabel("u(x, T)")
+        axes[index].legend()
+        axes[index].grid(True)
+    
+    fig.suptitle(f"1D Heat Equation at Final Time t = {parameters.T:.3f}", fontsize=14)
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.show()
+
+plot_simulation_final_time(parameters=p)
+plot_simulation(solver="cn", parameters=p)

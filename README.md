@@ -18,15 +18,15 @@ The Backward Euler and Crank–Nicolson methods are solved using a tridiagonal s
 
 ## Example
 As a demonstration, we solve the heat equation
-$$
+```math
     \frac{\partial u}{\partial t} = \alpha \frac{\partial^2 u}{\partial x^2}
-$$
+```
 on the spatial domain $[0, 1]$ with homogeneous Dirichlet boundary conditions $u(0, t) = u(1, t) = 0$, and initial condition given by $u(x, 0) = \sin(\pi x)$. 
 
 In this case, the heat equation has an exact solution given by the function
-$$
+```math
     u(x, t) = e^{-\alpha \pi^2 t} \, \sin(\pi x)
-$$
+```
 which we will use to validate the numerical solution. For the purpose of this demonstration, we will use the Crank–Nicolson method. 
 
 ### Example of C++ usage
@@ -138,9 +138,9 @@ plot_simulation_final_time(parameters=p)
 
 ### The Courant–Friedrichs–Lewy number and stability
 We end by providing a few remarks on the Courant–Friedrichs–Lewy number
-$$
+```math
     r = \frac{\alpha \, \Delta t}{\Delta x^2}.
-$$
+```
 since it governs the stability and accuracy of explicit time-stepping schemes for the heat equation. 
 
 - Forward Euler: requires $r \leq 0.5$ for stability.  

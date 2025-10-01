@@ -139,7 +139,7 @@ plot_simulation_final_time(parameters=p)
 ### The Courant–Friedrichs–Lewy number and stability
 We end by providing a few remarks on the Courant–Friedrichs–Lewy number
 ```math
-    r = \frac{\alpha \, \Delta t}{\Delta x^2}.
+    r = \frac{\alpha \, \Delta t}{\Delta x^2}
 ```
 since it governs the stability and accuracy of explicit time-stepping schemes for the heat equation. 
 

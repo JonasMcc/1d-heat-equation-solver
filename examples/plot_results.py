@@ -68,7 +68,7 @@ def load_solver_data(
         fpattern: str = f"example-outputs/full-simulation-{solver.upper()}/{suffix}"
         files = glob.glob(fpattern)
         fsorted: List = sorted(files, key=lambda f: int(re.search(r'step(\d+)\.dat', f).group(1)))
-        fselected: List = [f for f in fsorted if int(re.search(r'step(\d+)\.dat', f).group(1)) in p.save_steps]
+        fselected: List = [f for f in fsorted if int(re.search(r'step(\d+)\.dat', f).group(1)) in parameters.save_steps]
 
         return fselected
 
@@ -83,17 +83,17 @@ def plot_simulation(
 
     for index, file in enumerate(files_selected):
         step_index: int = int(re.search(r'step(\d+)\.dat', file).group(1))
-        t: float = step_index * p.dt
+        t: float = step_index * parameters.dt
 
         # Numerical solution
         u_numeric = np.loadtxt(file)[:, 1]
 
         # Exact solution
-        u_exact = np.exp(-p.alpha * np.pi**2 * t) * np.sin(np.pi * p.x)
+        u_exact = np.exp(-parameters.alpha * np.pi**2 * t) * np.sin(np.pi * parameters.x)
 
         plt.subplot(1, 3, index+1)
-        plt.plot(p.x, u_exact, 'r-', label='Exact')
-        plt.plot(p.x[::stride], u_numeric[::stride], 'bo', markersize=4, label='Numerical')
+        plt.plot(parameters.x, u_exact, 'r-', label='Exact')
+        plt.plot(parameters.x[::stride], u_numeric[::stride], 'bo', markersize=4, label='Numerical')
         plt.xlabel('x')
         plt.ylabel('u(x, t)')
         plt.title(f"t = {t:.3f}")
@@ -112,9 +112,13 @@ def plot_simulation(
     plt.show()   
 
 # I want to split it up, plot forward Euler etc. 
-def plot_simulation_final_time(parameters: Parameters):
+def plot_simulation_final_time(parameters: Parameters) -> None:
     """
-    Add.
+    Plot numerical vs exact solutions for all solvers (FE, BE, CN) 
+    at the final simulation time.
+
+    Args:
+        parameters (Parameters): Dataclass storing the simulation parameters
     """
     solvers = ["fe", "be", "cn"]
     solver_names = {

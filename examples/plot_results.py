@@ -77,15 +77,11 @@ def plot_simulation(
     parameters: Parameters,
     stride: int = 3
 ) -> None:
-    suffix: str = f"Heat{solver.upper()}_step*"
-    fpattern: str = f"example-outputs/full-simulation-{solver.upper()}/{suffix}"
-    files = glob.glob(fpattern)
-    fsorted: List = sorted(files, key=lambda f: int(re.search(r'step(\d+)\.dat', f).group(1)))
-    fselected: List = [f for f in fsorted if int(re.search(r'step(\d+)\.dat', f).group(1)) in p.save_steps]
+    files_selected = load_solver_data(solver=solver, parameters=parameters, final=False)
 
     plt.figure(figsize=(15,5))
 
-    for index, file in enumerate(fselected):
+    for index, file in enumerate(files_selected):
         step_index: int = int(re.search(r'step(\d+)\.dat', file).group(1))
         t: float = step_index * p.dt
 
@@ -114,7 +110,7 @@ def plot_simulation(
     plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.show()   
 
-#plot_simulation(solver="cn", parameters=p)
+plot_simulation(solver="cn", parameters=p)
 
 
 # I want to split it up, plot forward Euler etc. 

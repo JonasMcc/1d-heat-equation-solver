@@ -114,7 +114,13 @@ def load_solver_data(
                 - u_numeric: numerical solution at time t
                 - u_exact: exact solution at time t (computed analytically)
                 - t: final simulation time
+
+    Raises:
+        ValueError if the solver is not supported.
     """
+    if solver not in ["fe", "be", "cn"]:
+        raise ValueError("The solver is not supported. Choose between 'fe', 'be', 'cn'.")
+
     if final: 
         # Load final-time .dat file
         filepath = f"example-outputs/simulation-final-time/Heat{solver.upper()}.dat"
@@ -152,7 +158,13 @@ def plot_simulation(
         solver (str): Solver identifier ("fe", "be", "cn"). 
         parameters (Parameters): Simulation parameters dataclass.
         stride (int): Stride factor for downsampling numerical solution when plotting (to avoid too many markers).
+
+    Raises:
+        ValueError if the solver is not supported.
     """
+    if solver not in ["fe", "be", "cn"]:
+        raise ValueError("The solver is not supported. Choose between 'fe', 'be', 'cn'.")
+
     files_selected = load_solver_data(solver=solver, parameters=parameters, final=False)
 
     plt.figure(figsize=(15,5))
